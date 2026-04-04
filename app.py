@@ -106,7 +106,7 @@ if st.button("Classify and Solve", type="primary"):
             for name in sorted(class_methods):
                 st.markdown(f"- **{name}**")
         else:
-            st.warning("No methods from the class notes matched this equation.")
+            st.warning("No method matched this equation.")
 
         # 4. Solve the ODE and render
         st.subheader("✅ Final Solution ✅:")
