@@ -56,8 +56,8 @@ if st.button("Classify and Solve", type="primary"):
     
     try:
         # Parse inputs
-        M = sp.sympify(M_str)
-        N = sp.sympify(N_str)
+        M = sp.sympify(M_str, locals={'x': x, 'y': y})
+        N = sp.sympify(N_str, locals={'x': x, 'y': y})
         F = sp.simplify(-M / N)
         y_func = sp.Function('y')(x)
         ode = sp.Eq(y_func.diff(x), F.subs(y, y_func))
