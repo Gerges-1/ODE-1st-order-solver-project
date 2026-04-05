@@ -46,7 +46,7 @@ st.latex(r"M(x,y)dx + N(x,y)dy = 0")
 # User Inputs
 col1, col2 = st.columns(2)
 with col1:
-    M_str = st.text_input("Enter M(x,y):", "cos(x + y + 1)**2 + 1")
+    M_str = st.text_input("Enter M(x,y):", "(x + y)**2")
 with col2:
     N_str = st.text_input("Enter N(x,y):", "-1")
 
