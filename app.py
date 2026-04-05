@@ -2,7 +2,7 @@ import streamlit as st
 import sympy as sp
 
 # Web Page Setup
-st.set_page_config(page_title="ODE Classifier & Solver", page_icon="🧮", layout="centered")
+st.set_page_config(page_title="ODE Classifier & Solver", layout="centered")
 
 # Sidebar Sheet
 with st.sidebar:
@@ -39,7 +39,7 @@ with st.sidebar:
     """)
 
 # Main
-st.title("🧮 ODE Classifier & Solver")
+st.title("ODE Classifier & Solver")
 st.markdown("Enter your equation parts based on the standard form:")
 st.latex(r"M(x,y)dx + N(x,y)dy = 0")
 
@@ -101,7 +101,7 @@ if st.button("Classify and Solve", type="primary"):
                 class_methods.add("Reduced to Separation: f(ax+by+c)")
 
         # Display the classification results
-        st.subheader("📌 Identified Methods 📌:")
+        st.subheader("Identified Methods:")
         if class_methods:
             for name in sorted(class_methods):
                 st.markdown(f"- **{name}**")
@@ -109,7 +109,7 @@ if st.button("Classify and Solve", type="primary"):
             st.warning("No method matched this equation.")
 
         # 4. Solve the ODE and render
-        st.subheader("✅ Final Solution ✅:")
+        st.subheader("Final Solution:")
         with st.spinner("Calculating the integral..."):
             try:
                 solution = sp.dsolve(ode, y_func)
