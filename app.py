@@ -52,7 +52,7 @@ with col2:
 
 # The Solve
 if st.button("Classify and Solve", type="primary"):
-    x, y = sp.symbols('x y')
+    x, y = sp.symbols('x y', real=True)
     
     try:
         # Parse inputs
@@ -113,6 +113,7 @@ if st.button("Classify and Solve", type="primary"):
         with st.spinner("Calculating the integral..."):
             try:
                 solution = sp.dsolve(ode, y_func)
+                solution = sp.simplify(solution)
                 
                 if isinstance(solution, list):
                     for sol in solution:
