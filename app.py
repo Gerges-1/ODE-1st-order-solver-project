@@ -166,17 +166,20 @@ if solve_clicked:
                             CRITICAL INSTRUCTIONS FOR OUTPUT: 
                             1. DO NOT act like a teacher. Act like a strict, automated math calculator.
                             2. ZERO intro text, ZERO outro text, and ZERO conversational filler.
-                            3. You must format your output STRICTLY using this exact spacing template for every step:
+                            3. You must format your output STRICTLY using this exact template:
                                
                                **Step [Number]: [Action in 5 words or less]**
                                <br>
-                               $$ [LaTeX math equation 1] $$
-                               <br>
-                               $$ [LaTeX math equation 2 (if needed)] $$
+                               $$ [Exactly ONE LaTeX math equation] $$
                                
-                            4. THE HTML SPACING RULE: You MUST put the literal text "<br>" on its own line between the English text and the math. If a step has multiple equations, you MUST separate them with a comma and a "<br>" tag.
-                            5. Your final answer must be the clean, human-readable real-number format. 
-                            6. ABSOLUTELY DO NOT use or display complex exponentials, imaginary numbers, or Euler's formula anywhere in your text. 
+                            4. THE "ONE EQUATION PER LINE" RULE: You MUST NEVER combine multiple equations on the same line. Do not use \\implies or commas to chain equations together. 
+                            5. If a step requires multiple mathematical deductions, you MUST put each equation on a brand new line, wrapped in its own $$ tag, separated by a <br> tag.
+                               Example of what to do:
+                               $$ u = x + y $$
+                               <br>
+                               $$ du = dx + dy $$
+                            6. Your final answer must be the clean, human-readable real-number format. 
+                            7. ABSOLUTELY DO NOT use complex exponentials, imaginary numbers, or Euler's formula anywhere. 
                             
                             Provide ONLY the exact steps.
                             """
