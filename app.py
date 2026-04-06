@@ -166,20 +166,17 @@ if solve_clicked:
                             CRITICAL INSTRUCTIONS FOR OUTPUT: 
                             1. DO NOT act like a teacher. Act like a strict, automated math calculator.
                             2. ZERO intro text, ZERO outro text, and ZERO conversational filler.
-                            3. You must format your output STRICTLY like this for every single step:
+                            3. You must format your output STRICTLY using this exact spacing template for every step:
                                
                                **Step [Number]: [Action in 5 words or less]**
+                               <br>
+                               $$ [LaTeX math equation 1] $$
+                               <br>
+                               $$ [LaTeX math equation 2 (if needed)] $$
                                
-                               $$ [LaTeX math equation] $$
-                               
-                            4. CRITICAL SPACING RULE: You must put a blank line before and after every math equation. Never put math on the same line as the text. 
-                            5. MULTIPLE EQUATIONS RULE: If a single step requires multiple equations, you MUST separate them with a comma and put them on new lines. 
-                               Example of what to do: 
-                               $$ x+y=\tan(x+C) $$,
-                               $$ y=\tan(x+C)-x $$
-                            6. Example of FORBIDDEN text: "Our goal is to...", "Let's tackle this...", "We are given...", "This is a first-order..."
-                            7. Your final answer must be the clean, human-readable real-number format. 
-                            8. ABSOLUTELY DO NOT use or display complex exponentials, imaginary numbers, or Euler's formula anywhere in your text. 
+                            4. THE HTML SPACING RULE: You MUST put the literal text "<br>" on its own line between the English text and the math. If a step has multiple equations, you MUST separate them with a comma and a "<br>" tag.
+                            5. Your final answer must be the clean, human-readable real-number format. 
+                            6. ABSOLUTELY DO NOT use or display complex exponentials, imaginary numbers, or Euler's formula anywhere in your text. 
                             
                             Provide ONLY the exact steps.
                             """
