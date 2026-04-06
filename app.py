@@ -186,7 +186,7 @@ if solve_clicked:
                                 model='gemini-2.5-flash',
                                 contents=prompt
                             )
-                            st.markdown(response.text)
+                            st.markdown(response.text, unsafe_allow_html=True)
                         except Exception as ai_error:
                             st.error(f"🔍 AI ERROR DETECTED: {ai_error}")
                 # ----------------------------
