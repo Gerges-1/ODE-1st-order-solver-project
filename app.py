@@ -1,5 +1,13 @@
 import streamlit as st
 import sympy as sp
+from google import genai
+
+# Setup the AI Model
+try:
+    ai_client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+except Exception as e:
+    ai_client = None
+
 
 # Web Page Setup
 st.set_page_config(page_title="ODE Classifier & Solver", layout="centered")
@@ -7,7 +15,7 @@ st.set_page_config(page_title="ODE Classifier & Solver", layout="centered")
 # Sidebar Sheet
 with st.sidebar:
     st.header("Input Help Sheet")
-    st.markdown("""
+    st.markdown(r"""
     Use these formats when typing your equations into the text boxes:
 
     **Basic Math:**
@@ -43,15 +51,35 @@ st.title("ODE Classifier & Solver")
 st.markdown("Enter your equation parts based on the standard form:")
 st.latex(r"M(x,y)dx + N(x,y)dy = 0")
 
-# User Inputs
-col1, col2 = st.columns(2)
+# User Inputs & Live Preview
+col1, col2, col3 = st.columns([1, 1, 1.5])
 with col1:
     M_str = st.text_input("Enter M(x,y):", "(x + y)**2")
 with col2:
     N_str = st.text_input("Enter N(x,y):", "-1")
+with col3:
+    st.markdown("**Live Preview:**")
+    #try/except so the app doesn't crash if they are halfway through typing a parenthesis
+    try:
+        x_prev, y_prev = sp.symbols('x y', real=True)
+        M_prev = sp.sympify(M_str, locals={'x': x_prev, 'y': y_prev})
+        N_prev = sp.sympify(N_str, locals={'x': x_prev, 'y': y_prev})
+        F_prev = sp.simplify(-M_prev / N_prev)
+        
+        # Displays dy/dx = ...
+        st.latex(r"\frac{dy}{dx} = " + sp.latex(F_prev))
+    except Exception:
+
+        st.caption("Waiting for valid math...")
 
 # The Solve
-if st.button("Classify and Solve", type="primary"):
+colA, colB = st.columns(2)
+with colA:
+    solve_clicked = st.button("Classify and Solve", type="primary")
+with colB:
+    use_ai = st.checkbox("Generate AI Steps")
+
+if solve_clicked:
     x, y = sp.symbols('x y', real=True)
     
     try:
@@ -108,6 +136,7 @@ if st.button("Classify and Solve", type="primary"):
         else:
             st.warning("No method matched this equation.")
 
+       
         # 4. Solve the ODE and render
         st.subheader("Final Solution:")
         with st.spinner("Calculating the integral..."):
@@ -120,10 +149,54 @@ if st.button("Classify and Solve", type="primary"):
                         st.latex(sp.latex(sol))
                 else:
                     st.latex(sp.latex(solution))
+
+                #AI STEPS FEATURE
+                if use_ai and ai_client is not None:
+                    st.divider()
+                    st.subheader("Step-by-Step Breakdown")
+                    with st.spinner("The AI is reverse-engineering the steps..."):
+                        try:
+                            prompt = f"""
+                            Solve this differential equation: M(x,y)dx + N(x,y)dy = 0.
+                            M = {M_str}
+                            N = {N_str}
+                            
+                            CAS verified answer: {solution}
+                            
+                            CRITICAL INSTRUCTIONS FOR OUTPUT: 
+                            1. DO NOT act like a teacher. Act like a strict, automated math calculator.
+                            2. ZERO intro text, ZERO outro text, and ZERO conversational filler.
+                            3. You must format your output STRICTLY like this for every single step:
+                               
+                               **Step [Number]: [Action in 5 words or less]**
+                               
+                               $$ [LaTeX math equation] $$
+                               
+                            4. CRITICAL SPACING RULE: You must put a blank line before and after every math equation. Never put math on the same line as the text. 
+                            5. MULTIPLE EQUATIONS RULE: If a single step requires multiple equations, you MUST separate them with a comma and put them on new lines. 
+                               Example of what to do: 
+                               $$ x+y=\tan(x+C) $$,
+                               $$ y=\tan(x+C)-x $$
+                            6. Example of FORBIDDEN text: "Our goal is to...", "Let's tackle this...", "We are given...", "This is a first-order..."
+                            7. Your final answer must be the clean, human-readable real-number format. 
+                            8. ABSOLUTELY DO NOT use or display complex exponentials, imaginary numbers, or Euler's formula anywhere in your text. 
+                            
+                            Provide ONLY the exact steps.
+                            """
+                            
+                            # Using the new Google GenAI syntax
+                            response = ai_client.models.generate_content(
+                                model='gemini-2.5-flash',
+                                contents=prompt
+                            )
+                            st.markdown(response.text)
+                        except Exception as ai_error:
+                            st.error(f"🔍 AI ERROR DETECTED: {ai_error}")
+                # ----------------------------
             except NotImplementedError:
                 st.error("SymPy could not compute the final integral for this equation.")
-            except Exception as e:
-                st.error("Could not solve due to a complex math error.")
+            except Exception as math_error:
+                st.error(f"🔍 MATH ERROR DETECTED: {math_error}")
 
     except sp.SympifyError:
         st.error("⚠️ Error: Could not understand the math. Please check your spelling.")
