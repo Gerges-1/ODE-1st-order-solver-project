@@ -191,7 +191,11 @@ if solve_clicked:
                             )
                             st.markdown(response.text, unsafe_allow_html=True)
                         except Exception as ai_error:
-                            st.error(f"🔍 AI ERROR DETECTED: {ai_error}")
+                            error_message = str(ai_error)
+                            if "429" in error_message or "RESOURCE_EXHAUSTED" in error_message:
+                                st.warning("Overload! Please wait 30 seconds and click solve again.")
+                            else:
+                                st.error(f"🔍 AI ERROR DETECTED: {error_message}")
                 # ----------------------------
             except NotImplementedError:
                 st.error("SymPy could not compute the final integral for this equation.")
